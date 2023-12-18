@@ -437,8 +437,7 @@ class MixtralDecoderLayer(nn.Module):
         )
         h = x + r
         r = self.block_sparse_moe(self.ffn_norm(h))
-        out = h + r
-        return out
+        return h + r
 
 
 class MixtralForCausalLM(nn.Module):
@@ -500,9 +499,7 @@ class MixtralForCausalLM(nn.Module):
         sampling_metadata: SamplingMetadata,
     ) -> SamplerOutput:
         hidden_states = self.norm(hidden_states)
-        next_tokens = self.sampler(self.output.weight, hidden_states,
-                                   sampling_metadata)
-        return next_tokens
+        return self.sampler(self.output.weight, hidden_states, sampling_metadata)
 
     def load_weights(self,
                      model_name_or_path: str,
